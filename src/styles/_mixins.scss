@@ -26,3 +26,9 @@ $media-prefix: (
   -webkit-transition: $target $duration $timing;
   transition: $target $duration $timing;
 }
+
+@mixin container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}

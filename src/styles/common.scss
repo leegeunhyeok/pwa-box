@@ -1,2 +1,27 @@
 @import 'mixins';
 @import 'theme';
+
+@font-face {
+  font-family: quicksand;
+  src: local(Quicksand), url(~@/assets/fonts/Quicksand-Regular.ttf) format('truetype');
+  font-weight: normal, 400;
+}
+
+@font-face {
+  font-family: quicksand;
+  src: local(Quicksand), url(~@/assets/fonts/Quicksand-Light.ttf) format('truetype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: quicksand;
+  src: local(Quicksand), url(~@/assets/fonts/Quicksand-Bold.ttf) format('truetype');
+  font-weight: bold;
+}
+
+* {
+  h1 {
+    font-family: quicksand, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+      Helvetica Neue, Helvetica, Arial, sans-serif;
+  }
+}
