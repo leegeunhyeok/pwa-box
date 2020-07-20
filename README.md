@@ -38,3 +38,4 @@ npm run electron:build
 ---
 
 - LOGO Image: [icons8](https://icons8.com/icon/112470/box) box icon + [PWA Logo](https://github.com/webmaxru/progressive-web-apps-logo) (By [Geunhyeok LEE](https://github.com/leegeunhyeok))
+- Font: [Google Fonts - Quicksand](https://fonts.google.com/specimen/Quicksand)
