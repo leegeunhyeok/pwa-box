@@ -1,0 +1,28 @@
+$media-prefix: (
+  xs: 375px,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+@function get-width($name) {
+  $width: map-get($media-prefix, $name);
+  @return if($width != 0, $width, null);
+}
+
+@mixin screen-size($name) {
+  $width: get-width($name);
+  @if $width {
+    @media only screen and (max-width: $width) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@mixin transition($target: all, $duration: 0.3s, $timing: ease-in-out) {
+  -webkit-transition: $target $duration $timing;
+  transition: $target $duration $timing;
+}

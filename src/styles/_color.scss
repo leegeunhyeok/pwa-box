@@ -1,0 +1,38 @@
+$accent: #0071e3;
+$accent-text: #fff;
+
+$light-background: #fff;
+$light-text-primary: #000;
+$light-text-secondary: #888;
+
+$dark-background: #131218;
+$dark-text-primary: #fff;
+$dark-text-secondary: #888;
+
+$new-color: #f56300;
+
+$default-theme: 'light';
+$theme: (
+  light: (
+    background: $light-background,
+    textPrimary: $light-text-primary,
+    textSecondary: $light-text-secondary,
+    accent: $accent,
+    accentText: $accent-text,
+    iconFilter: brightness(0),
+    loading: #ccc,
+    lightImage: initial,
+    darkImage: none,
+  ),
+  dark: (
+    background: $dark-background,
+    textPrimary: $dark-text-primary,
+    textSecondary: $dark-text-secondary,
+    accent: $accent,
+    accentText: $accent-text,
+    iconFilter: brightness(1),
+    loading: #555,
+    lightImage: none,
+    darkImage: initial,
+  ),
+);

@@ -1,0 +1,36 @@
+@import 'color';
+
+@mixin theme {
+  @each $theme-name, $palette in $theme {
+    // Temp theme map
+    $map-theme: () !global;
+
+    @each $key, $color in $palette {
+      $map-theme: map-merge(
+        $map-theme,
+        (
+          $key: $color,
+        )
+      ) !global;
+    }
+
+    // Default theme (body tag without class)
+    @if $theme-name == $default-theme {
+      body {
+        @content;
+      }
+    }
+
+    body.#{$theme-name} {
+      @content;
+    }
+
+    // Clear map
+    $map-theme: null !global;
+  }
+}
+
+// Get color value from temp map
+@function t($key) {
+  @return map-get($map-theme, $key);
+}
