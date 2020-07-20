@@ -1,4 +1,10 @@
 module.exports = {
+  chainWebpack: config => {
+    config.plugin('html').tap(args => {
+      args[0].title = 'PWA Box';
+      return args;
+    });
+  },
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
