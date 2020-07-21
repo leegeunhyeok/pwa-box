@@ -10,11 +10,11 @@
 
 ## :car: Roadmap
 
-- :x: README.md Documentation :pencil:
-- :x: Generate Web App Manifest :clipboard:
-- :x: Generate Web App icons :hash:
-- :x: Generate Meta tags for Safari :apple:
-- :x: Generate Splash images for Apple devices :green_apple:
+- [ ] README.md Documentation :pencil:
+- [ ] Generate Web App Manifest :clipboard:
+- [ ] Generate Web App icons :hash:
+- [ ] Generate Meta tags for Safari :apple:
+- [ ] Generate Splash images for Apple devices :green_apple:
 
 ## :computer: Development
 
