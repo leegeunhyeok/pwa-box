@@ -1,13 +1,11 @@
 <template>
   <div class="home">
-    <div class="home__wrap" ref="logo">
-      <div class="home__logo">
-        <img alt="logo" src="../assets/logo.png" />
-      </div>
-      <div class="home__menu">
-        <Button color="blue">Quick Start</Button>
-        <Button>Set Manually</Button>
-      </div>
+    <div class="home__logo">
+      <img alt="logo" src="../assets/logo.png" />
+    </div>
+    <div class="home__menu" ref="menu">
+      <Button :class="hidden" color="blue">Quick Start</Button>
+      <Button :class="hidden">Set Manually</Button>
     </div>
   </div>
 </template>
@@ -22,21 +20,25 @@ import Button from '@/components/Button.vue';
   },
 })
 export default class Home extends Vue {
-  private showMenu: boolean;
+  private showButton: boolean;
 
   constructor() {
     super();
-    this.showMenu = false;
+    this.showButton = false;
+  }
+
+  get hidden() {
+    return this.showButton ? null : 'hidden';
   }
 
   mounted() {
     const animationEndHandler = () => {
       setTimeout(() => {
-        this.showMenu = true;
-      }, 250);
+        this.showButton = true;
+      });
     };
 
-    (this.$refs.logo as Element).addEventListener('animationend', animationEndHandler);
+    (this.$refs.menu as Element).addEventListener('animationend', animationEndHandler);
   }
 }
 </script>
@@ -48,18 +50,13 @@ export default class Home extends Vue {
 .home {
   @include container;
   display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &__wrap {
-    -webkit-animation: welcome 1s 1s forwards;
-    animation: welcome 1s 1s forwards;
-  }
+  justify-content: space-evenly;
+  flex-direction: column;
 
   &__logo {
     width: 300px;
     margin: auto;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     @include screen-size(md) {
       width: 50%;
@@ -77,40 +74,34 @@ export default class Home extends Vue {
   &__menu {
     margin: auto;
     width: 160px;
-    height: 80px;
-    opacity: 0;
-    -webkit-animation: delay 0.5s 2s forwards;
-    animation: delay 0.5s 2s forwards;
+    max-height: 0;
+    overflow: hidden;
+    -webkit-animation: welcome 1s 1s forwards;
+    animation: welcome 1s 1s forwards;
+    margin-bottom: 100px;
 
     & button {
       display: block;
       width: 100%;
       margin: 0.5rem 0;
+      @include transition(0.5s, opacity);
+
+      &.hidden {
+        opacity: 0;
+      }
     }
   }
 }
 
 @-webkit-keyframes welcome {
   100% {
-    margin-top: -10vh;
+    max-height: 100px;
   }
 }
 
 @keyframes welcome {
   100% {
-    margin-top: -10vh;
-  }
-}
-
-@-webkit-keyframes delay {
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes delay {
-  100% {
-    opacity: 1;
+    max-height: 100px;
   }
 }
 </style>
