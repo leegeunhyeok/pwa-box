@@ -1,11 +1,13 @@
 <template>
   <div class="home">
-    <div class="home__logo">
-      <img alt="logo" src="../assets/logo.png" />
-    </div>
-    <div class="home__menu" ref="menu">
-      <Button :class="hidden" color="blue">Quick Start</Button>
-      <Button :class="hidden">Set Manually</Button>
+    <div class="home__wrap">
+      <div class="home__logo">
+        <img alt="logo" src="../assets/logo.png" />
+      </div>
+      <div class="home__menu" ref="menu">
+        <Button :class="hidden" color="blue">Quick Start</Button>
+        <Button :class="hidden">Set Manually</Button>
+      </div>
     </div>
   </div>
 </template>
@@ -50,20 +52,24 @@ export default class Home extends Vue {
 .home {
   @include container;
   display: flex;
-  justify-content: space-evenly;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__wrap {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+  }
 
   &__logo {
-    width: 300px;
+    width: 60%;
+    max-width: auto;
     margin: auto;
     margin-bottom: 1rem;
 
     @include screen-size(md) {
-      width: 50%;
-    }
-
-    @include screen-size(sm) {
-      width: 60%;
+      width: 100%;
+      max-width: 250px;
     }
 
     img {
@@ -78,7 +84,6 @@ export default class Home extends Vue {
     overflow: hidden;
     -webkit-animation: welcome 1s 1s forwards;
     animation: welcome 1s 1s forwards;
-    margin-bottom: 100px;
 
     & button {
       display: block;
