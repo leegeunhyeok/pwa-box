@@ -33,7 +33,7 @@ export default class Button extends Vue {
 $radius: 0.2rem;
 
 @mixin button($background, $text) {
-  @include transition(0.2s, background-color);
+  @include transition(all, 0.2s);
   cursor: pointer;
   outline: none;
   padding: 0.6rem 1rem;

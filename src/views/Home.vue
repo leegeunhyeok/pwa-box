@@ -84,7 +84,6 @@ export default class Home extends Vue {
       display: block;
       width: 100%;
       margin: 0.5rem 0;
-      @include transition(0.5s, opacity);
 
       &.hidden {
         opacity: 0;
