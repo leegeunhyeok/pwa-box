@@ -1,13 +1,20 @@
 <template>
   <div id="app">
-    <router-view />
+    <transition :name="routeEffectDirection" mode="in-out">
+      <router-view />
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { mapGetters } from 'vuex';
 
-@Component
+@Component({
+  computed: {
+    ...mapGetters(['routeEffectDirection']),
+  },
+})
 export default class App extends Vue {
   mounted() {
     this.$router.push({ path: '/' }).catch(() => void '');
@@ -43,5 +50,28 @@ body {
       color: #42b983;
     }
   }
+}
+
+/* Route transition */
+.route-left-enter-active {
+  z-index: get-elevation('medium');
+  transition: transform 1s ease;
+}
+.route-left-enter {
+  transform: translateX(100%);
+}
+.route-left-leave-active {
+  display: none !important;
+}
+
+.route-right-enter-active {
+  z-index: get-elevation('medium');
+  transition: transform 1s ease;
+}
+.route-right-enter {
+  transform: translateX(-100%);
+}
+.route-right-leave-active {
+  display: none !important;
 }
 </style>

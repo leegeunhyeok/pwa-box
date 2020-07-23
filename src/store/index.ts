@@ -8,6 +8,9 @@ export default new Vuex.Store({
   state: {
     routeEffectDirection: RouteDirection.INIT,
   },
+  getters: {
+    routeEffectDirection: state => state.routeEffectDirection,
+  },
   mutations: {
     SET_ROUTE_EFFECT_TO_LEFT(state) {
       state.routeEffectDirection = RouteDirection.TO_LEFT;
