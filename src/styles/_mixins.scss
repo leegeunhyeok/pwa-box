@@ -1,14 +1,11 @@
-$media-prefix: (
-  xs: 375px,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-);
-
 @function get-width($name) {
   $width: map-get($media-prefix, $name);
   @return if($width != 0, $width, null);
+}
+
+@function get-elevation($level) {
+  $lv: map-get($elevation-value, $level);
+  @return if($lv != 0, $lv, null);
 }
 
 @mixin screen-size($name) {
@@ -28,7 +25,8 @@ $media-prefix: (
 }
 
 @mixin container {
-  position: relative;
+  top: 0;
+  position: fixed;
   width: 100%;
   height: 100%;
 }
