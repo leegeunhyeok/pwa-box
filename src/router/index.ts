@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import Home from '../views/Home.vue';
+import { provide, inject } from '@vue/composition-api';
+
+import Home from '@/views/Home.vue';
+import AppName from '@/views/AppName.vue';
 
 Vue.use(VueRouter);
 
@@ -11,19 +14,27 @@ const routes: Array<RouteConfig> = [
     component: Home,
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    path: '/name',
+    name: 'AppName',
+    component: AppName,
   },
 ];
 
-const router = new VueRouter({
+export const RouterSymbol = Symbol();
+export const provideRouter = (routes: VueRouter) => {
+  provide(RouterSymbol, routes);
+};
+
+export const useRouter = () => {
+  const router = inject<VueRouter>(RouterSymbol);
+  if (!router) {
+    throw Error('No router provided');
+  }
+  return router;
+};
+
+export default new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
 });
-
-export default router;

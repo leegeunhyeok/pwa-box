@@ -1,25 +1,39 @@
 <template>
   <div id="app">
-    <transition :name="routeEffectDirection" mode="in-out">
+    <transition :name="direction" mode="in-out">
       <router-view />
     </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { mapGetters } from 'vuex';
+import { ref, watch, onMounted } from '@vue/composition-api';
+import store, { provideStore } from '@/store';
+import router, { provideRouter } from '@/router';
 
-@Component({
-  computed: {
-    ...mapGetters(['routeEffectDirection']),
+export default {
+  setup() {
+    provideStore(store);
+    provideRouter(router);
+    const direction = ref(store.state.routeEffectDirection);
+
+    watch(
+      () => store.state.routeEffectDirection,
+      value => {
+        direction.value = value;
+      },
+    );
+
+    onMounted(() => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      router.push({ path: '/' }).catch(() => {});
+    });
+
+    return {
+      direction,
+    };
   },
-})
-export default class App extends Vue {
-  mounted() {
-    this.$router.push({ path: '/' }).catch(() => void '');
-  }
-}
+};
 </script>
 
 <style lang="scss">
@@ -36,20 +50,6 @@ body {
   @include container;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 
 /* Route transition */

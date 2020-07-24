@@ -1,36 +1,50 @@
 <template>
-  <button :class="buttonClass" @click="$emit('click')">
+  <button :class="buttonClass" @click="$emit('click')" :disabled="isDisabled">
     <slot></slot>
   </button>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { ref, watch, computed } from '@vue/composition-api';
 
-@Component
-export default class Button extends Vue {
-  @Prop() color: string | undefined;
-  private buttonClass: string;
-
-  constructor() {
-    super();
-    this.buttonClass = '';
-  }
-
-  created() {
-    if (this.color) {
-      this.buttonClass = `button--${this.color}`;
-    } else {
-      this.buttonClass = 'button';
-    }
-  }
+interface ButtonProps {
+  color?: string;
+  disabled?: boolean;
 }
+
+export default {
+  props: {
+    color: String,
+    disabled: Boolean,
+  },
+  setup(props: ButtonProps) {
+    const color = ref(props.color);
+    const disabled = ref(props.disabled);
+
+    watch(
+      () => props.color,
+      value => {
+        color.value = value;
+      },
+    );
+
+    watch(
+      () => props.disabled,
+      value => {
+        disabled.value = value;
+      },
+    );
+
+    return {
+      buttonClass: computed(() => (color.value ? `button--${color.value}` : 'button')),
+      isDisabled: disabled,
+    };
+  },
+};
 </script>
 
 <style lang="scss">
 @import '@/styles/common';
-
-$radius: 0.2rem;
 
 @mixin button($background, $text) {
   @include transition(all, 0.2s);
@@ -41,9 +55,15 @@ $radius: 0.2rem;
   color: $text;
   border-radius: $radius;
   border: none;
+  font-size: 0.9rem;
 
   &:hover {
     background-color: darken($background, 10%);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: desaturate($background, 50%);
   }
 }
 

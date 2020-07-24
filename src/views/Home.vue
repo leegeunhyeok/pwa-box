@@ -6,48 +6,54 @@
       </div>
       <div class="home__menu" ref="menu">
         <Button :class="hidden" color="blue" @click="quickStartHandler">Quick Start</Button>
-        <Button :class="hidden">Set Manually</Button>
+        <Button :class="hidden" @click="manuallyStartHandler">Set Manually</Button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import { ref, computed, onMounted } from '@vue/composition-api';
+import { useStore } from '@/store';
 import Routeable from '@/mixins/Routeable';
 import Button from '@/components/Button.vue';
 
-@Component({
+export default {
   components: {
     Button,
   },
-})
-export default class Home extends Routeable {
-  private showButton: boolean;
+  setup() {
+    const store = useStore();
+    const menu = ref(null);
+    const showButton = ref(false);
+    const { toNext, toPrevious } = Routeable();
 
-  constructor() {
-    super();
-    this.showButton = false;
-  }
-
-  get hidden() {
-    return this.showButton ? null : 'hidden';
-  }
-
-  mounted() {
-    const animationEndHandler = () => {
-      setTimeout(() => {
-        this.showButton = true;
-      });
+    const quickStartHandler = () => {
+      store.commit('START_QUICK');
+      toNext('/name');
     };
 
-    (this.$refs.menu as Element).addEventListener('animationend', animationEndHandler);
-  }
+    const manuallyStartHandler = () => {
+      store.commit('START_MANUAL');
+      toPrevious('/choose');
+    };
 
-  quickStartHandler() {
-    this.toNext('/about');
-  }
-}
+    onMounted(() => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (menu!.value! as Element).addEventListener('animationend', () => {
+        showButton.value = true;
+      });
+    });
+
+    return {
+      menu,
+      hidden: computed(() => (showButton.value ? null : 'hidden')),
+      showButton,
+      quickStartHandler,
+      manuallyStartHandler,
+    };
+  },
+};
 </script>
 
 <style lang="scss">

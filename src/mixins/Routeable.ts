@@ -1,13 +1,32 @@
 import Vue from 'vue';
+import { useStore } from '@/store';
+import { useRouter } from '@/router';
 
-export default class Routeable extends Vue {
-  toNext(path: string) {
-    this.$store.commit('SET_ROUTE_EFFECT_TO_LEFT');
-    this.$router.push({ path });
-  }
-
-  toPrevious(path: string) {
-    this.$store.commit('SET_ROUTE_EFFECT_TO_RIGHT');
-    this.$router.push({ path });
-  }
+interface RoutableFunctions {
+  toNext: Function;
+  toPrevious: Function;
 }
+
+export default (): RoutableFunctions => {
+  const store = useStore();
+  const router = useRouter();
+
+  const toNext = (path: string) => {
+    store.commit('SET_ROUTE_EFFECT_TO_LEFT');
+    Vue.nextTick(() => {
+      router.push({ path });
+    });
+  };
+
+  const toPrevious = (path: string) => {
+    store.commit('SET_ROUTE_EFFECT_TO_RIGHT');
+    Vue.nextTick(() => {
+      router.push({ path });
+    });
+  };
+
+  return {
+    toNext,
+    toPrevious,
+  };
+};
