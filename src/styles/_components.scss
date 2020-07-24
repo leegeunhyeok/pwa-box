@@ -1,0 +1,15 @@
+@include theme {
+  input {
+    outline: none;
+    border: none;
+    padding: 0.6rem 1rem;
+    background-color: $gray;
+    border-radius: $radius;
+    font-size: 0.9rem;
+    @include transition(background-color, 0.2s);
+
+    &:focus {
+      background-color: darken($gray, 5%);
+    }
+  }
+}
