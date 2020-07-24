@@ -1,7 +1,7 @@
 <template>
   <div class="app-name">
     <div class="app-name__wrap">
-      <input placeholder="App Name" spellcheck="false" @v-model="name" />
+      <input placeholder="App Name" spellcheck="false" v-model="name" />
       <Button color="blue" @click="nextHandler" :disabled="!isNameAvailable">Next</Button>
     </div>
   </div>
@@ -15,6 +15,7 @@ import Button from '@/components/Button.vue';
 const useAppName = () => {
   const name = ref('sample');
   const isNameAvailable = computed(() => !!name.value);
+
   return {
     name,
     isNameAvailable,
@@ -31,9 +32,10 @@ export default {
 
     const nextHandler = () => {
       if (isNameAvailable) {
-        // TODO
+        toNext('/');
+      } else {
+        toPrevious('/');
       }
-      toPrevious('/');
     };
 
     return {
