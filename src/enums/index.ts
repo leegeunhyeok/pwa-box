@@ -8,3 +8,17 @@ export enum StartType {
   QUICK,
   MANUAL,
 }
+
+export enum Orientation {
+  UNSET = -1,
+  LANDSCAPE,
+  PORTRAIT,
+}
+
+export enum Display {
+  UNSET = -1,
+  FULLSCREEN,
+  STANDALONE,
+  MINIMALUI,
+  BROWSER,
+}

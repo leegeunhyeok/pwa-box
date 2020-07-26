@@ -3,6 +3,8 @@ import Vuex, { Store, StoreOptions } from 'vuex';
 import { RouteDirection, StartType } from '@/enums';
 import { provide, inject } from '@vue/composition-api';
 
+import DataModule from '@/store/data';
+
 Vue.use(Vuex);
 
 export interface RootState {
@@ -33,7 +35,9 @@ const store: StoreOptions<RootState> = {
     },
   },
   actions: {},
-  modules: {},
+  modules: {
+    DataModule,
+  },
 };
 
 export const StoreSymbol = Symbol();
