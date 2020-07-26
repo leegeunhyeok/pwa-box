@@ -55,7 +55,7 @@ body {
 /* Route transition */
 .route-left-enter-active {
   z-index: get-elevation('medium');
-  transition: transform 1s ease;
+  transition: transform 0.8s ease;
 }
 .route-left-enter {
   transform: translateX(100%);
@@ -66,7 +66,7 @@ body {
 
 .route-right-enter-active {
   z-index: get-elevation('medium');
-  transition: transform 1s ease;
+  transition: transform 0.8s ease;
 }
 .route-right-enter {
   transform: translateX(-100%);
