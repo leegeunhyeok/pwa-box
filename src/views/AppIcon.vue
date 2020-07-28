@@ -39,10 +39,8 @@ import Vue from 'vue';
 import Konva from 'konva';
 import { ref, reactive, onMounted, onBeforeUnmount } from '@vue/composition-api';
 import { useStore } from '@/store';
-import { Level } from '@/enums';
 import Routeable from '@/mixins/Routeable';
 import Button from '@/components/Button.vue';
-import Bus from '@/event-bus';
 
 import std from '@/data/standard';
 
@@ -190,14 +188,20 @@ export default {
     const { toNext } = Routeable();
     const { loaded, fileHandler } = useFileloader();
 
+    const onChange = (e: Event) => {
+      title.main = TITLE.edit.main;
+      title.sub = TITLE.edit.sub;
+      fileHandler(e);
+    };
+
     onMounted(() => {
       const file = document.getElementById('icon_file') as HTMLElement;
-      file.addEventListener('change', fileHandler);
+      file.addEventListener('change', onChange);
     });
 
     onBeforeUnmount(() => {
       const file = document.getElementById('icon_file') as HTMLElement;
-      file.removeEventListener('change', fileHandler);
+      file.removeEventListener('change', onChange);
     });
 
     const nextHandler = () => {
