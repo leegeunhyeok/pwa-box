@@ -26,7 +26,7 @@ const useAppName = () => {
 };
 
 export default {
-  name: 'AppName',
+  name: 'AppIcon',
   components: {
     Button,
   },

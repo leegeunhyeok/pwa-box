@@ -23,6 +23,7 @@ interface MessageEvent {
 }
 
 export default {
+  name: 'App',
   components: {
     Alert,
   },
