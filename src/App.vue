@@ -3,15 +3,20 @@
     <transition :name="direction" mode="in-out">
       <router-view />
     </transition>
+    <Alert :message="message" :color="color" />
   </div>
 </template>
 
 <script lang="ts">
-import { ref, watch, onMounted } from '@vue/composition-api';
+import { ref, computed, watch, onMounted } from '@vue/composition-api';
 import store, { provideStore } from '@/store';
 import router, { provideRouter } from '@/router';
+import Alert from '@/components/Alert.vue';
 
 export default {
+  components: {
+    Alert,
+  },
   setup() {
     provideStore(store);
     provideRouter(router);
@@ -31,6 +36,8 @@ export default {
 
     return {
       direction,
+      message: computed(() => store.state.alertMessage),
+      color: computed(() => store.state.alertLevel),
     };
   },
 };

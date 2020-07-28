@@ -22,3 +22,12 @@ export enum Display {
   MINIMALUI,
   BROWSER,
 }
+
+export enum Level {
+  DEBUG = '',
+  INFO = 'blue',
+  SUCCESS = 'green',
+  WARNING = 'yellow',
+  ERROR = 'red',
+  CRITICAL = 'purple',
+}

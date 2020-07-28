@@ -9,11 +9,12 @@
 
 <script lang="ts">
 import { ref, computed } from '@vue/composition-api';
+import { useStore } from '@/store';
 import Routeable from '@/mixins/Routeable';
 import Button from '@/components/Button.vue';
 
 const useAppName = () => {
-  const name = ref('sample');
+  const name = ref('');
   const isNameAvailable = computed(() => !!name.value);
 
   return {
@@ -29,9 +30,11 @@ export default {
   setup() {
     const { name, isNameAvailable } = useAppName();
     const { toNext, toPrevious } = Routeable();
+    const store = useStore();
 
     const nextHandler = () => {
       if (isNameAvailable) {
+        store.commit('SET_NAME', name);
         toNext('/');
       } else {
         toPrevious('/');
