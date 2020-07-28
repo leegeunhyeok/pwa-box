@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex, { Store, StoreOptions } from 'vuex';
-import { RouteDirection, StartType, Level } from '@/enums';
+import { RouteDirection, StartType } from '@/enums';
 import { provide, inject } from '@vue/composition-api';
 
 import DataModule from '@/store/data';
@@ -10,16 +10,12 @@ Vue.use(Vuex);
 export interface RootState {
   routeEffectDirection: RouteDirection;
   startType: StartType;
-  alertLevel: Level;
-  alertMessage: string;
 }
 
 const store: StoreOptions<RootState> = {
   state: {
     routeEffectDirection: RouteDirection.INIT,
     startType: StartType.QUICK,
-    alertLevel: Level.DEBUG,
-    alertMessage: '',
   },
   getters: {
     routeEffectDirection: state => state.routeEffectDirection,
@@ -37,14 +33,10 @@ const store: StoreOptions<RootState> = {
     START_MANUAL(state) {
       state.startType = StartType.MANUAL;
     },
-    SET_ALERT_MESSAGE(state, { level, message }) {
-      state.alertLevel = level || Level.DEBUG;
-      state.alertMessage = message;
-    },
   },
   actions: {},
   modules: {
-    DataModule,
+    data: DataModule,
   },
 };
 

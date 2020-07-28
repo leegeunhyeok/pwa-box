@@ -3,15 +3,24 @@
     <transition :name="direction" mode="in-out">
       <router-view />
     </transition>
-    <Alert :message="message" :color="color" />
+    <transition name="alert">
+      <Alert :message="alert.message" :color="alert.color" v-show="show" />
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, computed, watch, onMounted } from '@vue/composition-api';
+import { ref, reactive, watch, onMounted } from '@vue/composition-api';
 import store, { provideStore } from '@/store';
 import router, { provideRouter } from '@/router';
-import Alert from '@/components/Alert.vue';
+import { Level } from '@/enums';
+import Alert, { useAlert } from '@/components/Alert.vue';
+import Bus from '@/event-bus';
+
+interface MessageEvent {
+  message: string;
+  color?: Level;
+}
 
 export default {
   components: {
@@ -21,6 +30,11 @@ export default {
     provideStore(store);
     provideRouter(router);
     const direction = ref(store.state.routeEffectDirection);
+    const { show, updateAlert } = useAlert();
+    const alert = reactive({
+      message: '',
+      color: Level.DEBUG,
+    });
 
     watch(
       () => store.state.routeEffectDirection,
@@ -34,10 +48,16 @@ export default {
       router.push({ path: '/' }).catch(() => {});
     });
 
+    Bus.$on('@message', (messageEvent: MessageEvent) => {
+      alert.message = messageEvent.message;
+      alert.color = messageEvent.color || Level.DEBUG;
+      updateAlert();
+    });
+
     return {
       direction,
-      message: computed(() => store.state.alertMessage),
-      color: computed(() => store.state.alertLevel),
+      alert,
+      show,
     };
   },
 };

@@ -10,8 +10,10 @@
 <script lang="ts">
 import { ref, computed } from '@vue/composition-api';
 import { useStore } from '@/store';
+import { Level } from '@/enums';
 import Routeable from '@/mixins/Routeable';
 import Button from '@/components/Button.vue';
+import Bus from '@/event-bus';
 
 const useAppName = () => {
   const name = ref('');
@@ -29,15 +31,18 @@ export default {
   },
   setup() {
     const { name, isNameAvailable } = useAppName();
-    const { toNext, toPrevious } = Routeable();
+    const { toNext } = Routeable();
     const store = useStore();
 
     const nextHandler = () => {
       if (isNameAvailable) {
-        store.commit('SET_NAME', name);
+        store.commit('data/SET_NAME', name);
         toNext('/');
       } else {
-        toPrevious('/');
+        Bus.$emit('@message', {
+          message: 'App name not available.',
+          color: Level.ERROR,
+        });
       }
     };
 

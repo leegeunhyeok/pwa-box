@@ -1,11 +1,9 @@
 <template>
-  <transition name="alert">
-    <div :class="alertClass" v-show="show">{{ msg }}</div>
-  </transition>
+  <div :class="alertClass">{{ message }}</div>
 </template>
 
 <script lang="ts">
-import { ref, watch, computed } from '@vue/composition-api';
+import { ref, computed } from '@vue/composition-api';
 
 const KEEP = 3;
 const EFFECT = 0.75;
@@ -15,47 +13,39 @@ interface AlertProps {
   message?: string;
 }
 
-const useAlertState = (props: AlertProps) => {
-  const message = ref('');
+export const useAlert = () => {
   const show = ref(false);
   let timeout = -1;
 
   const hideAlert = () => {
-    window.clearTimeout(timeout);
     show.value = false;
+    window.clearTimeout(timeout);
   };
 
-  const showAlert = () => {
+  const updateAlert = () => {
     if (show.value) {
       hideAlert();
       timeout = window.setTimeout(() => {
-        message.value = props.message || '';
         show.value = true;
         timeout = window.setTimeout(hideAlert, KEEP * 1000);
       }, EFFECT * 1000);
     } else {
-      message.value = props.message || '';
       show.value = true;
       timeout = window.setTimeout(hideAlert, KEEP * 1000);
     }
   };
 
-  watch(() => props.message, showAlert);
-
-  return { msg: message, show };
+  return { show, updateAlert };
 };
 
 export default {
   props: {
     message: String,
+    color: String,
   },
   setup(props: AlertProps) {
-    const { msg, show } = useAlertState(props);
-
     return {
       alertClass: computed(() => (props.color ? `alert--${props.color}` : `alert`)),
-      msg,
-      show,
     };
   },
 };

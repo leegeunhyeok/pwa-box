@@ -1,4 +1,4 @@
-import { Module, StoreOptions } from 'vuex';
+import { Module } from 'vuex';
 import { RootState } from '@/store';
 import { Orientation, Display } from '@/enums';
 
