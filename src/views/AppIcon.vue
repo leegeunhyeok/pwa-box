@@ -272,16 +272,11 @@ export default {
     }
 
     &__wrap {
-      width: 300px;
-      height: 300px;
+      width: 240px;
+      height: 240px;
       border-radius: 16px;
       border: 1px solid #ddd;
       overflow: hidden;
-
-      @include screen-size(lg) {
-        width: 200px;
-        height: 200px;
-      }
 
       div {
         width: 100%;
@@ -322,7 +317,7 @@ export default {
 
     &__list {
       max-height: 120px;
-      max-width: 200px;
+      max-width: 240px;
       width: 90%;
       padding: 0 1rem;
       margin-top: 1rem;
