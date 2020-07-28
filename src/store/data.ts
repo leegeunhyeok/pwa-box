@@ -48,7 +48,7 @@ const module: Module<DataState, RootState> = {
     SET_NAME(state, name: string) {
       state.appName = state.appShortName = name;
     },
-    SET_ICON(state, icon: IIcon) {
+    SET_ICON(state, icon: Icon) {
       state.appIcon.push(icon);
     },
     SET_THEME(state, color: string) {
@@ -57,7 +57,7 @@ const module: Module<DataState, RootState> = {
     SET_BACKGROUND(state, color: string) {
       state.appBackgroundColor = color;
     },
-    SET_SPLASH(state, splash: ISplash) {
+    SET_SPLASH(state, splash: Splash) {
       state.appSplash.push(splash);
     },
     SET_ORIENTATION(state, orienration: Orientation) {
