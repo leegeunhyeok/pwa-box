@@ -74,11 +74,11 @@ export default {
   }
 
   &--yellow {
-    @include alert($blue, #333);
+    @include alert($yellow, #333);
   }
 
   &--green {
-    @include alert($blue, #fff);
+    @include alert($green, #fff);
   }
 
   &--blue {
@@ -86,7 +86,7 @@ export default {
   }
 
   &--purple {
-    @include alert($blue, #fff);
+    @include alert($purple, #fff);
   }
 }
 

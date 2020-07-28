@@ -4,6 +4,7 @@ import { provide, inject } from '@vue/composition-api';
 
 import Home from '@/views/Home.vue';
 import AppName from '@/views/AppName.vue';
+import AppIcon from '@/views/AppIcon.vue';
 
 Vue.use(VueRouter);
 
@@ -17,6 +18,11 @@ const routes: Array<RouteConfig> = [
     path: '/name',
     name: 'AppName',
     component: AppName,
+  },
+  {
+    path: '/icon',
+    name: 'AppIcon',
+    component: AppIcon,
   },
 ];
 

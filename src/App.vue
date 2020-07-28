@@ -46,7 +46,7 @@ export default {
 
     onMounted(() => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      router.push({ path: '/' }).catch(() => {});
+      router.push({ path: '/icon' }).catch(() => {});
     });
 
     Bus.$on('@message', (messageEvent: MessageEvent) => {

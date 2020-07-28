@@ -38,7 +38,7 @@ export default {
     const nextHandler = () => {
       if (isNameAvailable) {
         store.commit('data/SET_NAME', name);
-        toNext('/');
+        toNext('/icon');
       } else {
         Bus.$emit('@message', {
           message: 'App name not available.',
