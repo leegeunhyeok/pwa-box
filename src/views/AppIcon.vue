@@ -30,15 +30,17 @@
         </div>
       </transition>
     </div>
-    <div class="app-icon__size" :class="loaded ? null : 'hide'">
-      <span
-        v-for="icon in sizeList"
-        @click="sizeToggleHandler(icon.size)"
-        :class="icon.active ? 'active' : null"
-        :key="icon.size"
-      >
-        {{ icon.size }}
-      </span>
+    <div class="app-icon__list" :class="loaded ? null : 'hide'">
+      <div class="app-icon__size">
+        <span
+          v-for="icon in sizeList"
+          @click="sizeToggleHandler(icon.size)"
+          :class="icon.active ? 'active' : null"
+          :key="icon.size"
+        >
+          {{ getSizeText(icon.size) }}
+        </span>
+      </div>
     </div>
     <Button color="blue" :disabled="!loaded" @click="nextHandler">Next</Button>
   </div>
@@ -103,7 +105,7 @@ const initStage = (image: HTMLImageElement) => {
   });
 
   const transformer = new Konva.Transformer({
-    borderStroke: '#408cea',
+    borderStroke: '#aaa',
     anchorStroke: '#408cea',
     centeredScaling: true,
   });
@@ -189,6 +191,7 @@ const useIconList = () => {
   const initList = std.iconSize.map(icon => {
     return { size: icon.size, active: !!icon.recommend };
   });
+
   const list = reactive({ list: initList });
   return toRefs(list);
 };
@@ -218,6 +221,7 @@ export default {
       file.addEventListener('change', onChange);
     });
 
+    const getSizeText = (size: number) => `${size}x${size}`;
     const sizeToggleHandler = (size: number) => {
       const icon = list.value.find(icon => icon.size === size);
       if (icon) {
@@ -227,8 +231,6 @@ export default {
 
     const nextHandler = () => {
       // TODO: Save b64 image data to Vuex store.
-      const file = document.getElementById('icon_file') as HTMLElement;
-      file.removeEventListener('change', onChange);
       toNext('/');
     };
 
@@ -236,6 +238,7 @@ export default {
       title,
       loaded,
       sizeList: list,
+      getSizeText,
       sizeToggleHandler,
       nextHandler,
     };
@@ -317,50 +320,56 @@ export default {
       }
     }
 
-    &__size {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-around;
-      width: 100%;
-      max-width: 500px;
-      padding-top: 1rem;
-      overflow-x: auto;
-      overflow-y: hidden;
-      max-height: 100px;
+    &__list {
+      max-height: 120px;
+      max-width: 200px;
+      width: 90%;
+      padding: 0 1rem;
+      margin-top: 1rem;
+      border: 1px solid $gray;
+      border-radius: 1rem;
+      overflow-y: auto;
       @include transition(max-height, 0.5s);
 
-      @include screen-size(sm) {
-        max-width: 100%;
+      &.hide {
+        max-height: 0px;
+        border: none;
+        overflow: hidden;
       }
+    }
+
+    &__size {
+      padding: 1rem 0;
+      padding-bottom: 0.5rem;
 
       span {
         cursor: pointer;
+        display: block;
         padding: 0.5rem 1rem;
+        color: #333;
         background-color: $gray;
-        border-radius: 6px;
-        @include transition(background-color, 0.2s);
+        text-align: center;
+        border-radius: 2rem;
+        margin-bottom: 0.5rem;
+        @include transition((background-color, 0.2s), (color, 0.2s));
 
         &.active {
-          background-color: $green;
+          background-color: $accent;
           color: #fff;
 
           &:hover {
-            background-color: darken($green, 10%);
+            background-color: darken($accent, 10%);
           }
         }
 
         &:hover {
-          background-color: darken($gray, 10%);
+          background-color: darken(#fff, 10%);
         }
-      }
-
-      &.hide {
-        max-height: 0px;
       }
     }
 
     button {
-      margin-top: 2rem;
+      margin-top: 1rem;
     }
   }
 }
