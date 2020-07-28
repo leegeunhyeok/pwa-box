@@ -30,6 +30,16 @@
         </div>
       </transition>
     </div>
+    <div class="app-icon__size" :class="loaded ? null : 'hide'">
+      <span
+        v-for="icon in sizeList"
+        @click="sizeToggleHandler(icon.size)"
+        :class="icon.active ? 'active' : null"
+        :key="icon.size"
+      >
+        {{ icon.size }}
+      </span>
+    </div>
     <Button color="blue" :disabled="!loaded" @click="nextHandler">Next</Button>
   </div>
 </template>
@@ -37,7 +47,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Konva from 'konva';
-import { ref, reactive, onMounted, onBeforeUnmount } from '@vue/composition-api';
+import { ref, reactive, onMounted, toRefs } from '@vue/composition-api';
 import { useStore } from '@/store';
 import Routeable from '@/mixins/Routeable';
 import Button from '@/components/Button.vue';
@@ -175,6 +185,14 @@ const useFileloader = () => {
   return { loaded, fileHandler };
 };
 
+const useIconList = () => {
+  const initList = std.iconSize.map(icon => {
+    return { size: icon.size, active: !!icon.recommend };
+  });
+  const list = reactive({ list: initList });
+  return toRefs(list);
+};
+
 export default {
   name: 'AppIcon',
   components: {
@@ -187,6 +205,7 @@ export default {
     });
     const { toNext } = Routeable();
     const { loaded, fileHandler } = useFileloader();
+    const { list } = useIconList();
 
     const onChange = (e: Event) => {
       title.main = TITLE.edit.main;
@@ -199,19 +218,25 @@ export default {
       file.addEventListener('change', onChange);
     });
 
-    onBeforeUnmount(() => {
-      const file = document.getElementById('icon_file') as HTMLElement;
-      file.removeEventListener('change', onChange);
-    });
+    const sizeToggleHandler = (size: number) => {
+      const icon = list.value.find(icon => icon.size === size);
+      if (icon) {
+        icon.active = !icon.active;
+      }
+    };
 
     const nextHandler = () => {
       // TODO: Save b64 image data to Vuex store.
+      const file = document.getElementById('icon_file') as HTMLElement;
+      file.removeEventListener('change', onChange);
       toNext('/');
     };
 
     return {
       title,
       loaded,
+      sizeList: list,
+      sizeToggleHandler,
       nextHandler,
     };
   },
@@ -244,11 +269,16 @@ export default {
     }
 
     &__wrap {
-      width: 200px;
-      height: 200px;
+      width: 300px;
+      height: 300px;
       border-radius: 16px;
       border: 1px solid #ddd;
       overflow: hidden;
+
+      @include screen-size(lg) {
+        width: 200px;
+        height: 200px;
+      }
 
       div {
         width: 100%;
@@ -287,8 +317,50 @@ export default {
       }
     }
 
+    &__size {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 500px;
+      padding-top: 1rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-height: 100px;
+      @include transition(max-height, 0.5s);
+
+      @include screen-size(sm) {
+        max-width: 100%;
+      }
+
+      span {
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        background-color: $gray;
+        border-radius: 6px;
+        @include transition(background-color, 0.2s);
+
+        &.active {
+          background-color: $green;
+          color: #fff;
+
+          &:hover {
+            background-color: darken($green, 10%);
+          }
+        }
+
+        &:hover {
+          background-color: darken($gray, 10%);
+        }
+      }
+
+      &.hide {
+        max-height: 0px;
+      }
+    }
+
     button {
-      margin-top: 1rem;
+      margin-top: 2rem;
     }
   }
 }
