@@ -75,11 +75,11 @@ export default {
   }
 
   &--yellow {
-    @include button($blue, #333);
+    @include button($yellow, #333);
   }
 
   &--green {
-    @include button($blue, #fff);
+    @include button($green, #fff);
   }
 
   &--blue {
@@ -87,7 +87,7 @@ export default {
   }
 
   &--purple {
-    @include button($blue, #fff);
+    @include button($purple, #fff);
   }
 }
 </style>
