@@ -63,7 +63,8 @@ export default {
 
   &:disabled {
     cursor: not-allowed;
-    background-color: desaturate($background, 50%);
+    color: #777;
+    background-color: #ddd;
   }
 }
 
