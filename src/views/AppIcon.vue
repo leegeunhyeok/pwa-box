@@ -109,10 +109,11 @@
 import Vue from 'vue';
 import { ref, reactive, onMounted, toRefs } from '@vue/composition-api';
 import { useStore } from '@/store';
-import { IconTarget } from '../enums';
+import { Level, IconTarget } from '@/enums';
 import Routeable from '@/mixins/Routeable';
 import Button from '@/components/Button.vue';
 import std from '@/data/standard';
+import Bus from '@/event-bus';
 
 import { IconEditor, IconImage } from '@/editor';
 
@@ -202,6 +203,14 @@ export default {
     };
 
     const nextHandler = () => {
+      if (!list.value.filter(x => x.active).length) {
+        Bus.$emit('@message', {
+          message: 'App icon size is required.',
+          color: Level.ERROR,
+        });
+        return;
+      }
+
       if (!methods.toImage) {
         return;
       }
