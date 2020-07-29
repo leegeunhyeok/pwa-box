@@ -31,3 +31,10 @@ export enum Level {
   ERROR = 'red',
   CRITICAL = 'purple',
 }
+
+export enum IconTarget {
+  COMMON,
+  APPLE,
+  ANDROID,
+  OTHER,
+}

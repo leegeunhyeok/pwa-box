@@ -1,48 +1,48 @@
-enum iconTarget {
-  COMMON,
-  APPLE,
-  ANDROID,
-  OTHER,
-}
+import { IconTarget } from '@/enums';
 
 interface IconInformation {
   size: number;
-  target: iconTarget;
+  target: IconTarget;
   recommend?: boolean;
 }
 
 interface Standard {
   maxIconSize: number;
-  iconSize: IconInformation[];
+  icons: IconInformation[];
 }
 
 const standard: Standard = {
   maxIconSize: 512,
-  iconSize: [
+  icons: [
     {
       size: 72,
-      target: iconTarget.COMMON,
+      target: IconTarget.COMMON,
     },
     {
       size: 96,
-      target: iconTarget.COMMON,
+      target: IconTarget.COMMON,
     },
     {
       size: 128,
-      target: iconTarget.COMMON,
+      target: IconTarget.COMMON,
     },
     {
       size: 144,
-      target: iconTarget.COMMON,
+      target: IconTarget.COMMON,
+    },
+    {
+      size: 180,
+      target: IconTarget.APPLE,
+      recommend: true,
     },
     {
       size: 192,
-      target: iconTarget.COMMON,
+      target: IconTarget.ANDROID,
       recommend: true,
     },
     {
       size: 512,
-      target: iconTarget.COMMON,
+      target: IconTarget.ANDROID,
       recommend: true,
     },
   ],
