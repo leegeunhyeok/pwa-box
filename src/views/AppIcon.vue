@@ -5,9 +5,9 @@
       <div class="app-icon__title--sub">{{ title.sub }}</div>
     </div>
     <div class="app-icon__wrap">
-      <transition name="fade" mode="out-in">
-        <div id="container" v-if="loaded" />
-        <div v-else>
+      <transition-group name="fade" mode="out-in">
+        <div ref="container" v-show="loaded" :key="1" />
+        <div v-show="!loaded" :key="2">
           <label for="icon_file">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -26,9 +26,9 @@
               <line x1="12" y1="4" x2="12" y2="16" />
             </svg>
           </label>
-          <input id="icon_file" type="file" accept="image/jpeg, image/png" />
+          <input id="icon_file" type="file" accept="image/jpeg, image/png" @change="onChange" />
         </div>
-      </transition>
+      </transition-group>
     </div>
     <div class="app-icon__list" :class="loaded ? null : 'hide'">
       <div class="app-icon__size">
@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { ref, reactive, onMounted, toRefs } from '@vue/composition-api';
+import { ref, reactive, onMounted, toRefs, defineComponent } from '@vue/composition-api';
 import { useStore } from '@/store';
 import { Level, IconTarget } from '@/enums';
 import Routeable from '@/mixins/Routeable';
@@ -161,13 +161,15 @@ const useIconList = () => {
   return toRefs(list);
 };
 
-export default {
+export default defineComponent({
   name: 'AppIcon',
   components: {
     Button,
   },
   setup() {
     const store = useStore();
+    const file = ref(null);
+    const container = ref(null);
     const { toNext } = Routeable();
     const { list } = useIconList();
     const { init, methods } = IconEditor();
@@ -176,7 +178,8 @@ export default {
       image.src = data.toString();
       image.onload = () => {
         setLoadState(true);
-        Vue.nextTick(() => init({ containerId: 'container', image }));
+        console.log(container.value);
+        Vue.nextTick(() => init({ container: (container.value as unknown) as HTMLElement, image }));
       };
     });
     const title = reactive({
@@ -190,8 +193,7 @@ export default {
     };
 
     onMounted(() => {
-      const file = document.getElementById('icon_file') as HTMLElement;
-      file.addEventListener('change', onChange);
+      console.log(container.value);
     });
 
     const getSizeText = (size: number) => `${size}x${size}`;
@@ -233,7 +235,10 @@ export default {
     return {
       title,
       loaded,
+      file,
+      container,
       sizeList: list,
+      onChange,
       getSizeText,
       sizeToggleHandler,
       nextHandler,
@@ -249,7 +254,7 @@ export default {
       },
     };
   },
-};
+});
 </script>
 
 <style lang="scss">

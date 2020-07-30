@@ -2,7 +2,7 @@ import Konva from 'konva';
 import std from '@/data/standard';
 
 interface IconEditorConfig {
-  containerId: string;
+  container: HTMLElement;
   image: HTMLImageElement;
 }
 
@@ -22,7 +22,7 @@ export const IconEditor = () => {
 
   const init = (config: IconEditorConfig) => {
     const stage = new Konva.Stage({
-      container: config.containerId,
+      container: config.container as HTMLDivElement,
       width: std.maxIconSize,
       height: std.maxIconSize,
     });
@@ -65,7 +65,7 @@ export const IconEditor = () => {
       anchorStroke: '#408cea',
       centeredScaling: true,
     });
-    transformer.attachTo(icon);
+    transformer.nodes([icon]);
 
     backgroundList.forEach(({ background }) => layer.add(background));
     layer.add(icon);
@@ -74,7 +74,7 @@ export const IconEditor = () => {
     stage.add(layer);
 
     (() => {
-      const container = document.getElementById('container') as HTMLElement;
+      const container = config.container as HTMLElement;
       const containerWidth = container.offsetWidth;
       const scale = containerWidth / std.maxIconSize;
       stage.width(std.maxIconSize * scale);
