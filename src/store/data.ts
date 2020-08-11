@@ -1,7 +1,7 @@
 import { Module } from 'vuex';
 import { RootState } from '@/store';
 import { Orientation, Display } from '@/enums';
-import { IconImage } from '@/editor';
+import { Image } from '@/ImageGenerator';
 
 export interface Size {
   width: number;
@@ -17,7 +17,7 @@ export interface Splash {
 interface DataState {
   appName: string;
   appShortName: string;
-  appIcon: IconImage[];
+  appIcon: Image[];
   appIconSizes: number[];
   appThemeColor: string;
   appBackgroundColor: string;
@@ -45,7 +45,7 @@ const module: Module<DataState, RootState> = {
     SET_NAME(state, name: string) {
       state.appName = state.appShortName = name;
     },
-    SET_ICON(state, icon: IconImage) {
+    SET_ICON(state, icon: Image) {
       state.appIcon.push(icon);
     },
     SET_ICON_SIZE(state, size: number) {
