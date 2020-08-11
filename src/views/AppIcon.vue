@@ -6,8 +6,8 @@
     </div>
     <div class="app-icon__wrap">
       <transition-group name="fade" mode="out-in">
-        <div ref="container" v-show="loaded" :key="1" />
-        <div v-show="!loaded" :key="2">
+        <div ref="container" v-show="isLoaded" :key="1" />
+        <div v-show="!isLoaded" :key="2">
           <label for="icon_file">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -26,11 +26,11 @@
               <line x1="12" y1="4" x2="12" y2="16" />
             </svg>
           </label>
-          <input id="icon_file" type="file" accept="image/jpeg, image/png" @change="onChange" />
+          <input id="icon_file" type="file" accept="image/jpeg, image/png" @change="fileHandler" />
         </div>
       </transition-group>
     </div>
-    <div class="app-icon__list" :class="loaded ? null : 'hide'">
+    <div class="app-icon__list" :class="isLoaded ? null : 'hide'">
       <div class="app-icon__size">
         <div
           v-for="icon in sizeList"
@@ -101,13 +101,13 @@
         </div>
       </div>
     </div>
-    <Button color="blue" :disabled="!loaded" @click="nextHandler">Next</Button>
+    <Button color="blue" :disabled="!isLoaded" @click="nextHandler">Next</Button>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { ref, reactive, onMounted, toRefs, defineComponent } from '@vue/composition-api';
+import { ref, reactive, toRefs, defineComponent } from '@vue/composition-api';
 import { useStore } from '@/store';
 import { Level, IconTarget } from '@/enums';
 import Routeable from '@/mixins/Routeable';
@@ -115,7 +115,7 @@ import Button from '@/components/Button.vue';
 import std from '@/data/standard';
 import Bus from '@/event-bus';
 
-import { IconEditor, IconImage } from '@/editor';
+import { ImageGenerator } from '@/ImageGenerator';
 
 const TITLE = {
   upload: {
@@ -128,23 +128,26 @@ const TITLE = {
   },
 };
 
-const useFileLoader = (onLoadCallback: Function) => {
-  const loaded = ref(false);
-  const setLoadState = (state: boolean) => {
-    loaded.value = state;
-  };
-
+const useFileLoader = () => {
+  const isLoaded = ref(false);
+  let onloadCallback: Function | null = null;
+  const onImageLoad = (f: Function) => (onloadCallback = f);
   const fileHandler = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const [file] = target.files as FileList;
     const reader = new FileReader();
     reader.onload = (event: ProgressEvent<FileReader>) => {
-      onLoadCallback((event.target as FileReader).result);
+      isLoaded.value = true;
+      Vue.nextTick(() => {
+        if (onloadCallback) {
+          onloadCallback((event.target as FileReader).result);
+        }
+      });
     };
     reader.readAsDataURL(file);
   };
 
-  return { loaded, setLoadState, fileHandler };
+  return { isLoaded, fileHandler, onImageLoad };
 };
 
 const useIconList = () => {
@@ -161,6 +164,22 @@ const useIconList = () => {
   return toRefs(list);
 };
 
+const iconBackgrounds = [
+  {
+    target: IconTarget.ANDROID,
+    config: {
+      color: '#fff',
+      radius: 16,
+    },
+  },
+  {
+    target: IconTarget.APPLE,
+    config: {
+      color: '#fff',
+    },
+  },
+];
+
 export default defineComponent({
   name: 'AppIcon',
   components: {
@@ -172,31 +191,25 @@ export default defineComponent({
     const container = ref(null);
     const { toNext } = Routeable();
     const { list } = useIconList();
-    const { init, methods } = IconEditor();
-    const { loaded, setLoadState, fileHandler } = useFileLoader((data: ArrayBuffer) => {
-      const image = new Image();
-      image.src = data.toString();
-      image.onload = () => {
-        setLoadState(true);
-        console.log(container.value);
-        Vue.nextTick(() => init({ container: (container.value as unknown) as HTMLElement, image }));
-      };
-    });
     const title = reactive({
       ...TITLE.upload,
     });
+    const imageGenerator = new ImageGenerator({
+      width: std.maxIconSize,
+      height: std.maxIconSize,
+    });
+    const { isLoaded, onImageLoad, fileHandler } = useFileLoader();
 
-    const onChange = (e: Event) => {
+    onImageLoad((data: ArrayBuffer) => {
       title.main = TITLE.edit.main;
       title.sub = TITLE.edit.sub;
-      fileHandler(e);
-    };
-
-    onMounted(() => {
-      console.log(container.value);
+      const image = new Image();
+      image.src = data.toString();
+      image.onload = () => {
+        imageGenerator.init((container.value as unknown) as HTMLDivElement, image);
+      };
     });
 
-    const getSizeText = (size: number) => `${size}x${size}`;
     const sizeToggleHandler = (size: number) => {
       const icon = list.value.find(icon => icon.size === size);
       if (icon) {
@@ -213,11 +226,19 @@ export default defineComponent({
         return;
       }
 
-      if (!methods.toImage) {
-        return;
-      }
+      imageGenerator.updateBackground({
+        color: '#fff',
+        radius: 16,
+      });
 
-      methods.toImage().then((images: IconImage[]) => {
+      Promise.all(
+        iconBackgrounds.map(background => {
+          imageGenerator.updateBackground(background.config);
+          return imageGenerator
+            .toData({ width: std.maxIconSize, height: std.maxIconSize })
+            .then(src => ({ target: background.target, src }));
+        }),
+      ).then(images => {
         images.forEach(image => {
           store.commit('data/SET_ICON', image);
         });
@@ -234,14 +255,14 @@ export default defineComponent({
 
     return {
       title,
-      loaded,
+      fileHandler,
       file,
       container,
+      isLoaded,
       sizeList: list,
-      onChange,
-      getSizeText,
       sizeToggleHandler,
       nextHandler,
+      getSizeText: (size: number) => `${size}x${size}`,
       isTarget(target: IconTarget, name: string) {
         if (IconTarget.COMMON === target) {
           return true;
