@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { IconTarget } from './enums';
 
-const THREHSOLD = 0.2;
+const THREHSOLD = 0.1;
 
 interface ImageSize {
   width: number;
@@ -34,8 +34,8 @@ export class ImageGenerator {
 
   constructor(size: ImageSize) {
     this.size = size;
-    this.minSize = Math.floor(this.size.width * 1 - THREHSOLD); // Max 80%
-    this.maxSize = Math.floor(this.size.width * THREHSOLD); // Min 20%
+    this.minSize = Math.floor(this.size.width * THREHSOLD); // Min 10%
+    this.maxSize = Math.floor(this.size.width * (1 - THREHSOLD)); // Max 10%
   }
 
   init(container: HTMLDivElement, image: HTMLImageElement) {
@@ -70,14 +70,12 @@ export class ImageGenerator {
     this.iconLayer = new Konva.Layer();
     this.iconLayer.add(this.icon);
     this.iconLayer.draw();
-
     this.stage.add(this.backgroundLayer);
     this.stage.add(this.iconLayer);
     this.stage.draw();
   }
 
   updateIconSize(value: number) {
-    //@typescript-eslint/no-non-null-assertion
     const scope = this.maxSize - this.minSize;
     const targetSize = this.minSize + scope * value;
     const iconPaddingLeft = Math.floor((this.size.width - targetSize) / 2);
@@ -92,9 +90,10 @@ export class ImageGenerator {
   updateBackground(config: BackgroundConfig) {
     this.background!.fill(config.color || '#ffffff');
     this.background!.cornerRadius(config.radius || 0);
+    this.backgroundLayer!.draw();
   }
 
-  toData(size: ImageSize) {
+  toData(size: ImageSize): Promise<string> {
     return new Promise(resolve => {
       const stage = this.stage!.clone(null);
       stage.size({ ...size });

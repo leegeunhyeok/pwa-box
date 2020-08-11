@@ -30,74 +30,82 @@
         </div>
       </transition-group>
     </div>
-    <div class="app-icon__list" :class="isLoaded ? null : 'hide'">
-      <div class="app-icon__size">
-        <div
-          v-for="icon in sizeList"
-          @click="sizeToggleHandler(icon.size)"
-          :class="icon.active ? 'active' : null"
-          :key="icon.size"
-        >
-          <div class="app-icon__size__target">
-            <span v-if="isTarget(icon.target, 'android')">
+    <div class="app-icon__control" :class="isLoaded ? null : 'hide'">
+      <div class="app-icon__slider">
+        <input type="range" min="20" max="100" v-model.number="iconSize" />
+      </div>
+      <div class="app-icon__list">
+        <div class="app-icon__size">
+          <div
+            v-for="icon in sizeList"
+            @click="sizeToggleHandler(icon.size)"
+            :class="icon.active ? 'active' : null"
+            :key="icon.size"
+          >
+            <div class="app-icon__size__target">
+              <span v-if="isTarget(icon.target, 'android')">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="icon icon-tabler icon-tabler-brand-android"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <line x1="3" y1="10" x2="3" y2="16" />
+                  <line x1="21" y1="10" x2="21" y2="16" />
+                  <path d="M7 9h10v8a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-8a5 5 0 0 1 10 0" />
+                  <line x1="8" y1="3" x2="9" y2="5" />
+                  <line x1="16" y1="3" x2="15" y2="5" />
+                  <line x1="9" y1="18" x2="9" y2="21" />
+                  <line x1="15" y1="18" x2="15" y2="21" />
+                </svg>
+              </span>
+              <span v-if="isTarget(icon.target, 'ios')">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="icon icon-tabler icon-tabler-brand-apple"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="#ffffff"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <path
+                    d="M9 7c-3 0-4 3-4 5.5 0 3 2 7.5 4 7.5 1.088-.046 1.679-.5 3-.5 1.312 0 1.5.5 3 .5s4-3 4-5c-.028-.01-2.472-.403-2.5-3-.019-2.17 2.416-2.954 2.5-3-1.023-1.492-2.951-1.963-3.5-2-1.433-.111-2.83 1-3.5 1-.68 0-1.9-1-3-1z"
+                  />
+                  <path d="M12 4a2 2 0 0 0 2 -2a2 2 0 0 0 -2 2" />
+                </svg>
+              </span>
+            </div>
+            {{ getSizeText(icon.size) }}
+            <span
+              class="app-icon__size__recommend"
+              v-if="icon.recommend"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-brand-android"
+                class="icon icon-tabler icon-tabler-thumb-up"
+                width="44"
+                height="44"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" />
-                <line x1="3" y1="10" x2="3" y2="16" />
-                <line x1="21" y1="10" x2="21" y2="16" />
-                <path d="M7 9h10v8a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-8a5 5 0 0 1 10 0" />
-                <line x1="8" y1="3" x2="9" y2="5" />
-                <line x1="16" y1="3" x2="15" y2="5" />
-                <line x1="9" y1="18" x2="9" y2="21" />
-                <line x1="15" y1="18" x2="15" y2="21" />
-              </svg>
-            </span>
-            <span v-if="isTarget(icon.target, 'ios')">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-brand-apple"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="#ffffff"
+                stroke="#2c3e50"
                 fill="none"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
                 <path stroke="none" d="M0 0h24v24H0z" />
                 <path
-                  d="M9 7c-3 0-4 3-4 5.5 0 3 2 7.5 4 7.5 1.088-.046 1.679-.5 3-.5 1.312 0 1.5.5 3 .5s4-3 4-5c-.028-.01-2.472-.403-2.5-3-.019-2.17 2.416-2.954 2.5-3-1.023-1.492-2.951-1.963-3.5-2-1.433-.111-2.83 1-3.5 1-.68 0-1.9-1-3-1z"
+                  d="M7 11v 8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"
                 />
-                <path d="M12 4a2 2 0 0 0 2 -2a2 2 0 0 0 -2 2" />
               </svg>
             </span>
           </div>
-          {{ getSizeText(icon.size) }}
-          <span class="app-icon__size__recommend" v-if="icon.recommend">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-thumb-up"
-              width="44"
-              height="44"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="#2c3e50"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" />
-              <path
-                d="M7 11v 8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"
-              />
-            </svg>
-          </span>
         </div>
       </div>
     </div>
@@ -107,7 +115,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { ref, reactive, toRefs, defineComponent } from '@vue/composition-api';
+import { ref, reactive, toRefs, watch, defineComponent } from '@vue/composition-api';
 import { useStore } from '@/store';
 import { Level, IconTarget } from '@/enums';
 import Routeable from '@/mixins/Routeable';
@@ -189,6 +197,7 @@ export default defineComponent({
     const store = useStore();
     const file = ref(null);
     const container = ref(null);
+    const iconSize = ref(80);
     const { toNext } = Routeable();
     const { list } = useIconList();
     const title = reactive({
@@ -210,6 +219,8 @@ export default defineComponent({
       };
     });
 
+    watch(iconSize, newVal => imageGenerator.updateIconSize(newVal / 100));
+
     const sizeToggleHandler = (size: number) => {
       const icon = list.value.find(icon => icon.size === size);
       if (icon) {
@@ -225,11 +236,6 @@ export default defineComponent({
         });
         return;
       }
-
-      imageGenerator.updateBackground({
-        color: '#fff',
-        radius: 16,
-      });
 
       Promise.all(
         iconBackgrounds.map(background => {
@@ -259,6 +265,7 @@ export default defineComponent({
       file,
       container,
       isLoaded,
+      iconSize,
       sizeList: list,
       sizeToggleHandler,
       nextHandler,
@@ -318,6 +325,12 @@ export default defineComponent({
           width: 100% !important;
           height: auto !important;
           margin: auto;
+
+          canvas {
+            width: 100% !important;
+            height: auto !important;
+            margin: auto;
+          }
         }
 
         label {
@@ -347,13 +360,11 @@ export default defineComponent({
       }
     }
 
-    &__list {
-      max-height: 120px;
+    &__control {
       max-width: 240px;
       width: 90%;
       margin-top: 1rem;
       border-radius: 1rem;
-      overflow-y: auto;
       @include transition(max-height, 0.5s);
 
       &.hide {
@@ -361,6 +372,13 @@ export default defineComponent({
         border: none;
         overflow: hidden;
       }
+    }
+
+    &__list {
+      max-height: 120px;
+      width: 100%;
+      border-radius: 1rem;
+      overflow-y: auto;
     }
 
     &__size {
